@@ -47,9 +47,34 @@ export const shop = {
 };
 
 export const assets = {
-  heroImage: generatedHero.image, // e.g. "/generated/hero.jpg"
-  heroVideo: generatedHero.video, // e.g. "/generated/hero.mp4" (optional, Veo)
+  heroImage: generatedHero.image, // AI hero still (fallback)
+  heroVideo: "/hero-web.mp4", // web-optimized HD Veo render
+  heroPoster: "/hero-poster.jpg",
 };
+
+// "How it's made" story (real photos from the kitchen)
+export const processSteps: { img: string; title: string; text: string }[] = [
+  { img: "/process/select.jpg", title: "Hand-selected", text: "Ingredients chosen with strict quality checks, stones and damaged pods removed." },
+  { img: "/process/sun.jpg", title: "Sun-dried", text: "Whole chillies and spices dried naturally under the sun the traditional way." },
+  { img: "/process/roast.jpg", title: "Slow-roasted", text: "Roasted in small batches over gentle heat to lock in aroma and flavour." },
+  { img: "/process/grind.jpg", title: "Stone-ground", text: "Freshly ground to the perfect texture, never bulk-processed." },
+  { img: "/process/pack.jpg", title: "Packed with care", text: "Sealed fresh and hygienically, ready to travel from our home to yours." },
+];
+
+// Real behind-the-scenes clips (portrait reels)
+export const reels: { src: string; poster: string; caption: string }[] = [
+  { src: "/reels/r2.mp4", poster: "/reels/r2.jpg", caption: "Roasting chillies" },
+  { src: "/reels/r3.mp4", poster: "/reels/r3.jpg", caption: "Roasting lentils" },
+  { src: "/reels/r1.mp4", poster: "/reels/r1.jpg", caption: "Sun-drying" },
+  { src: "/reels/r4.mp4", poster: "/reels/r4.jpg", caption: "Sorting by hand" },
+];
+
+// Customer reviews (from real WhatsApp feedback)
+export const testimonials: { name: string; text: string; product: string }[] = [
+  { name: "Happy customer", text: "The rasam masala was so good, with balanced spices and a perfect blend of aroma. Overall it was great and satisfying!", product: "Rasam Powder" },
+  { name: "Happy customer", text: "Idli powder is also very tasty. Goes perfect with idli and dosa. Loved it!", product: "Idli Powder" },
+  { name: "Regular buyer", text: "You can really taste the freshness. Feels just like homemade, exactly how amma makes it.", product: "Sambar Powder" },
+];
 
 export type CategoryId = "oil" | "masala" | "sweet";
 
@@ -105,19 +130,19 @@ const rawCategories: RawCategory[] = [
 // Prices are placeholders. Replace with your real rates.
 const rawProducts: Product[] = [
   // ---- Wood-Pressed Oils ----
-  { id: "coconut-oil", name: "Coconut Oil", desc: "Wood-pressed. Natural & chemical-free. Great for cooking, skin & hair.", price: 350, unit: "500 ml", category: "oil", emoji: "🥥", tag: "Bestseller",
+  { id: "coconut-oil", name: "Coconut Oil", desc: "Wood-pressed. Natural & chemical-free. Great for cooking, skin & hair.", price: 400, unit: "500 ml", category: "oil", emoji: "🥥", tag: "Bestseller",
     imgPrompt: "A glass bottle of clear golden wood-pressed coconut oil with a fresh whole coconut and coconut halves beside it, rustic wooden surface, warm natural light, traditional chekku oil, product food photography" },
-  { id: "groundnut-oil", name: "Ground Nut Oil", desc: "Heart-healthy and rich in nutrients. Ideal for daily cooking.", price: 300, unit: "1 L", category: "oil", emoji: "🥜",
+  { id: "groundnut-oil", name: "Ground Nut Oil", desc: "Heart-healthy and rich in nutrients. Ideal for daily cooking.", price: 350, unit: "1 L", category: "oil", emoji: "🥜",
     imgPrompt: "A glass bottle of golden wood-pressed groundnut oil with raw peanuts scattered around, rustic wooden surface, warm natural light, traditional chekku oil, product food photography" },
-  { id: "gingelly-oil", name: "Gingelly (Sesame) Oil", desc: "Rich in antioxidants. Good for bones & skin, with a traditional taste.", price: 400, unit: "500 ml", category: "oil", emoji: "🫙",
+  { id: "gingelly-oil", name: "Gingelly (Sesame) Oil", desc: "Rich in antioxidants. Good for bones & skin, with a traditional taste.", price: 480, unit: "500 ml", category: "oil", emoji: "🫙",
     imgPrompt: "A glass bottle of amber wood-pressed sesame gingelly oil with sesame seeds scattered around, rustic wooden surface, warm natural light, traditional chekku oil, product food photography" },
-  { id: "hair-oil", name: "Herbal Hair Oil", desc: "For hair growth & hair fall. Strengthens roots and nourishes the scalp.", price: 250, unit: "200 ml", category: "oil", emoji: "💆",
-    imgPrompt: "A dark glass bottle of herbal hair oil with hibiscus flowers, curry leaves and amla beside it, rustic surface, warm natural light, traditional Indian hair oil, product photography" },
-  { id: "neem-oil", name: "Neem Oil", desc: "Supports scalp health and hair growth. Anti-bacterial, pure & natural.", price: 220, unit: "200 ml", category: "oil", emoji: "🌿",
+  { id: "castor-oil", name: "Castor Oil", desc: "Cold-pressed and pure. Nourishes hair and skin, a traditional remedy.", price: 75, unit: "200 ml", category: "oil", emoji: "💧",
+    imgPrompt: "A glass bottle of thick pale golden cold-pressed castor oil with castor seeds scattered beside it, rustic wooden surface, warm natural light, traditional Indian oil, product photography" },
+  { id: "neem-oil", name: "Neem Oil", desc: "Supports scalp health and hair growth. Anti-bacterial, pure & natural.", price: 60, unit: "100 ml", category: "oil", emoji: "🌿",
     imgPrompt: "A glass bottle of neem oil with fresh green neem leaves around it, rustic wooden surface, natural light, traditional Indian herbal oil, product photography" },
 
   // ---- Authentic Masala Powders ----
-  { id: "turmeric", name: "Turmeric Powder", desc: "Pure & natural, with rich colour and aroma.", price: 80, unit: "200 g", category: "masala", emoji: "🟡",
+  { id: "turmeric", name: "Organic Turmeric Powder", desc: "Pure, organic and natural, with rich colour and aroma.", price: 600, unit: "1 kg", category: "masala", emoji: "🟡",
     imgPrompt: "A wooden bowl of vivid golden yellow turmeric powder with fresh turmeric roots beside it, rustic dark surface, warm light, homemade Indian spice, product food photography" },
   { id: "chilli", name: "Chilli Powder", desc: "Spicy & flavourful, from premium-quality chillies.", price: 90, unit: "250 g", category: "masala", emoji: "🌶️", tag: "Bestseller",
     imgPrompt: "A wooden bowl of bright red chilli powder with whole dried red chillies scattered around, dark background, dramatic warm light, homemade Indian spice, product food photography" },

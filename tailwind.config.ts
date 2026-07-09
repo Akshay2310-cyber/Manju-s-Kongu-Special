@@ -52,15 +52,40 @@ const config: Config = {
           "60%": { transform: "scale(1.05)" },
           "100%": { transform: "scale(1)" },
         },
+        "accordion-down": {
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        shimmer: {
+          "0%": { backgroundPosition: "-200% 0" },
+          "100%": { backgroundPosition: "200% 0" },
+        },
+        "glow-pan": {
+          "0%,100%": { backgroundPosition: "0% 50%" },
+          "50%": { backgroundPosition: "100% 50%" },
+        },
+        float: {
+          "0%,100%": { transform: "translateY(0)" },
+          "50%": { transform: "translateY(-6px)" },
+        },
       },
       animation: {
         "slide-up": "slide-up 0.28s cubic-bezier(0.16,1,0.3,1)",
         "fade-in": "fade-in 0.2s ease-out",
         pop: "pop 0.25s ease-out",
+        "accordion-down": "accordion-down 0.24s ease-out",
+        "accordion-up": "accordion-up 0.24s ease-out",
+        shimmer: "shimmer 2.5s linear infinite",
+        "glow-pan": "glow-pan 4s ease infinite",
+        float: "float 3s ease-in-out infinite",
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwindcss-animate")],
 };
 
 export default config;

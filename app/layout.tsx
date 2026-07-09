@@ -23,11 +23,19 @@ const sans = Inter({
   display: "swap",
 });
 
-// Image shown in WhatsApp / Instagram / social link previews.
-const shareImage = assets.heroImage || "/logo.png";
+// Image shown in WhatsApp / Instagram / social link previews (1200x630).
+const shareImage = "/og.jpg";
+
+// Resolve the absolute base URL so share previews work. On Vercel this is
+// filled automatically; locally / elsewhere it falls back to shop.siteUrl.
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+    ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+    : shop.siteUrl;
 
 export const metadata: Metadata = {
-  metadataBase: new URL(shop.siteUrl),
+  metadataBase: new URL(siteUrl),
   title: `${shop.name} · ${shop.tagline}`,
   description: shop.subtagline,
   keywords: [
@@ -42,11 +50,11 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${shop.name} · ${shop.tagline}`,
     description: shop.subtagline,
-    url: shop.siteUrl,
+    url: siteUrl,
     siteName: shop.name,
     type: "website",
     locale: "en_IN",
-    images: [{ url: shareImage, width: 1024, height: 1024, alt: shop.name }],
+    images: [{ url: shareImage, width: 1200, height: 630, alt: shop.name }],
   },
   twitter: {
     card: "summary_large_image",

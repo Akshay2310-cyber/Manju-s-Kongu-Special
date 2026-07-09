@@ -75,16 +75,21 @@ export default function ChatWidget() {
       )}
 
       {/* launcher button */}
-      <button
-        onClick={() => setOpen((v) => !v)}
-        aria-label={open ? "Close chat" : "Chat with us"}
-        className="relative grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-soft transition active:scale-90"
-      >
-        {open ? <span className="text-2xl leading-none">✕</span> : <WhatsAppIcon size={30} />}
+      <div className="relative">
         {!open && (
-          <span className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 animate-pop rounded-full border-2 border-cream bg-clay" />
+          <span className="absolute inset-0 -z-10 animate-ping rounded-full bg-[#25D366] opacity-60" />
         )}
-      </button>
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? "Close chat" : "Chat with us on WhatsApp"}
+          className="relative grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-soft transition hover:brightness-105 active:scale-90"
+        >
+          {open ? <span className="text-2xl leading-none">✕</span> : <WhatsAppIcon size={30} />}
+          {!open && (
+            <span className="absolute -right-0.5 -top-0.5 h-3.5 w-3.5 animate-pop rounded-full border-2 border-cream bg-clay" />
+          )}
+        </button>
+      </div>
     </div>
   );
 }

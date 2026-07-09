@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { categories, products, type CategoryId } from "@/lib/config";
 import ProductCard from "./ProductCard";
+import Reveal from "./Reveal";
 
 type Filter = "all" | CategoryId;
 
@@ -35,11 +36,16 @@ export default function Catalog() {
                 <h2 className="font-display text-2xl font-semibold text-ink">{cat.label}</h2>
                 <span className="text-xs text-ink/50">{cat.blurb}</span>
               </div>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              <Reveal
+                key={`${cat.id}-${filter}`}
+                as="div"
+                stagger
+                className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
+              >
                 {list.map((p) => (
                   <ProductCard key={p.id} product={p} />
                 ))}
-              </div>
+              </Reveal>
             </div>
           );
         })}

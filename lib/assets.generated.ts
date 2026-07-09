@@ -7,7 +7,7 @@ export const generatedImages: Record<string, string> = {
   "coconut-oil": "/generated/coconut-oil.png",
   "groundnut-oil": "/generated/groundnut-oil.png",
   "gingelly-oil": "/generated/gingelly-oil.png",
-  "hair-oil": "/generated/hair-oil.png",
+  "castor-oil": "/generated/castor-oil.png",
   "neem-oil": "/generated/neem-oil.png",
   "turmeric": "/generated/turmeric.png",
   "chilli": "/generated/chilli.png",
@@ -23,5 +23,5 @@ export const generatedImages: Record<string, string> = {
 };
 export const generatedHero: { image: string; video: string } = {
   "image": "/generated/hero.png",
-  "video": "/generated/hero.mp4"
+  "video": ""
 };

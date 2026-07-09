@@ -32,6 +32,40 @@ button {
   touch-action: manipulation;
 }
 
-/* hide scrollbar for category chips row */
+/* hide scrollbar for category chips / carousels */
 .no-scrollbar::-webkit-scrollbar { display: none; }
 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* anime.js scroll-reveal initial state (JS animates to visible) */
+.reveal-init { opacity: 0; transform: translateY(20px); }
+
+/* uiverse-inspired glowing gradient CTA */
+.btn-glow { position: relative; z-index: 0; }
+.btn-glow::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  z-index: -1;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #e0a53f, #b5451f, #8a2b2b, #e0a53f);
+  background-size: 300% 100%;
+  animation: glow-pan 4s ease infinite;
+  filter: blur(7px);
+  opacity: 0.75;
+}
+
+/* shimmer sweep for highlight chips */
+.shine {
+  background-image: linear-gradient(110deg, transparent 30%, rgba(255,255,255,0.55) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: shimmer 2.6s linear infinite;
+}
+
+/* scroll-snap carousel row */
+.snap-row { scroll-snap-type: x mandatory; }
+.snap-row > * { scroll-snap-align: start; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-init { opacity: 1; transform: none; }
+  .btn-glow::before, .shine { animation: none; }
+}

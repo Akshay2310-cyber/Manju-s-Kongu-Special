@@ -113,7 +113,7 @@ async function genHeroVideo() {
       ai.models.generateVideos({
         model: VIDEO_MODEL,
         prompt,
-        config: { numberOfVideos: 1, aspectRatio: "16:9" },
+        config: { numberOfVideos: 1, aspectRatio: "16:9", resolution: "1080p" },
       })
     );
     while (!op.done) {
