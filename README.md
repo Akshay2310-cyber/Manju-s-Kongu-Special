@@ -54,6 +54,26 @@ vercel                 # first run links / creates the project
 vercel --prod          # ships to production
 ```
 
+## Orders backend & dashboard
+
+Every order is recorded in a database and shown in a private dashboard.
+
+- Customer checks out to WhatsApp; the order is also POSTed to `/api/orders`.
+- Open the dashboard at **`/admin`** and sign in with `ADMIN_PASSWORD`.
+- See every order with full details, revenue/today/new stats, search, status
+  filters (New / Confirmed / Delivered / Cancelled) and one-tap "Message customer".
+
+**Local dev:** works instantly, saving to a local SQLite file (`data/orders.db`).
+
+**Production (Vercel):** serverless has no persistent disk, so set a free hosted
+database once:
+1. Create a DB at https://turso.tech (2 minutes).
+2. In Vercel project settings to Environment Variables, add:
+   - `TURSO_DATABASE_URL` = your `libsql://...` URL
+   - `TURSO_AUTH_TOKEN` = your token
+   - `ADMIN_PASSWORD` = a password of your choice
+3. Redeploy.
+
 ## How the WhatsApp order works
 
 The order message is built in [`lib/cart.tsx`](lib/cart.tsx) (`buildWhatsAppOrder`)

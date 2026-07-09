@@ -10,6 +10,7 @@
     "generate": "tsx scripts/generate-assets.ts"
   },
   "dependencies": {
+    "@libsql/client": "^0.17.4",
     "@radix-ui/react-accordion": "^1.2.16",
     "@radix-ui/react-dialog": "^1.1.19",
     "animejs": "^3.2.2",

@@ -35,3 +35,8 @@ next-env.d.ts
 # working files
 _incoming/
 .gen.log
+
+# local orders database
+/data
+*.db
+*.db-journal

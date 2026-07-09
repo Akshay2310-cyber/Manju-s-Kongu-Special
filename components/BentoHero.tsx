@@ -30,16 +30,7 @@ export default function BentoHero() {
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-forest-dark via-forest-dark/55 to-transparent" />
 
-          <div className="relative flex h-full flex-col justify-between p-6 sm:p-8">
-            <div className="flex flex-col gap-2">
-              <span className="font-brand text-lg font-semibold tracking-wide text-turmeric drop-shadow sm:text-xl">
-                {shop.name}
-              </span>
-              <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-cream/15 px-3 py-1 text-xs font-medium backdrop-blur-sm">
-                <span className="h-1.5 w-1.5 animate-pop rounded-full bg-turmeric" />
-                Order in seconds on WhatsApp
-              </span>
-            </div>
+          <div className="relative flex h-full flex-col justify-end p-6 sm:p-8">
             <div>
               <h1 className="font-brand text-4xl font-semibold leading-[1.02] drop-shadow-lg sm:text-6xl">
                 {shop.tagline}

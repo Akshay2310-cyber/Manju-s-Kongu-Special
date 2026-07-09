@@ -5,7 +5,7 @@ import { shop } from "@/lib/config";
 import { useCart, buildWhatsAppOrder, waLink } from "@/lib/cart";
 
 export default function CartSheet() {
-  const { open, setOpen, items, subtotal, count, add, decrement, remove } = useCart();
+  const { open, setOpen, items, subtotal, count, add, decrement, remove, clear } = useCart();
   const [customer, setCustomer] = useState({ name: "", phone: "", address: "", notes: "" });
   const [touched, setTouched] = useState(false);
 
@@ -15,8 +15,24 @@ export default function CartSheet() {
   const handleOrder = () => {
     setTouched(true);
     if (!canOrder) return;
+    // open WhatsApp synchronously (keeps the user gesture, avoids popup block)
     const msg = buildWhatsAppOrder(items, subtotal, customer);
     window.open(waLink(msg), "_blank");
+    // record the order in the backend (best-effort, non-blocking)
+    const orderItems = items.map(({ product, qty }) => ({
+      id: product.id,
+      name: product.name,
+      unit: product.unit,
+      price: product.price,
+      qty,
+    }));
+    fetch("/api/orders", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ ...customer, items: orderItems, subtotal, count }),
+    }).catch(() => {});
+    clear();
+    setOpen(false);
   };
 
   return (
