@@ -1,38 +1,57 @@
-# Amma's Kitchen — WhatsApp storefront
+# Manju's Kongu Special · WhatsApp storefront
 
-A modern, mobile-first shop for homemade masalas & organic sugar/jaggery.
-Customers browse, add to cart, fill their details, and tap **"Place order on
-WhatsApp"** — this opens WhatsApp with the whole order pre-typed and sends it
-straight to your number. No backend, no cost, no Meta approval.
+A modern, mobile-first, Apple-style bento storefront for farm-fresh masalas,
+wood-pressed oils and healthy sweeteners. Customers browse, add to cart, fill
+their details and tap **"Place order on WhatsApp"**, which opens WhatsApp with
+the whole order pre-typed and sends it straight to your number. No backend, no
+cost, no Meta approval.
 
-## Where to edit things
+## Everything you edit lives in one file
 
-**Everything you'll change lives in one file:** [`lib/config.ts`](lib/config.ts)
+[`lib/config.ts`](lib/config.ts):
 
-- `shop.name`, `shop.tagline` — your brand
-- `shop.whatsappNumber` — the number that receives orders (currently `916364858213`)
-- `products` — add/remove items, change names, prices, units, categories, emoji
-- To use real photos: drop a file in `/public` (e.g. `sambar.jpg`) and set
-  `image: "/sambar.jpg"` on that product.
+- `shop.name`, `shop.tagline`, `shop.logo`
+- `shop.whatsappNumber`: the number that receives orders (currently `916364858213`)
+- `products`: names, **prices** (currently placeholders, update them), units, categories
+- `categories`: the three sections (oils / masalas / sweeteners)
+
+## Your logo
+
+Save your logo image as `public/logo.png` (or update `shop.logo` to whatever you
+name it). Until it exists, the header shows a simple fallback badge.
+
+## AI imagery (Google Gemini)
+
+Product / category / hero images are generated once on your machine and saved as
+static files in `public/generated`. The API key never reaches the browser.
+
+```bash
+cp .env.local.example .env.local     # then paste your key inside
+npm run generate                     # generate all images
+npm run generate -- --video          # also render a hero video (needs Veo access)
+npm run generate -- --force          # re-generate even if a file already exists
+```
+
+Get a free key at https://aistudio.google.com/apikey. Generated files are committed
+so Vercel serves them. Re-run `generate` whenever you add or rename products.
 
 ## Run locally
 
 ```bash
 npm install
-npm run dev      # open http://localhost:3000
+npm run dev            # http://localhost:3000  (use -- -p 3100 for another port)
 ```
 
 ## Deploy to Vercel
 
-**Option A — from the dashboard (easiest):**
-1. Push this folder to a GitHub repo.
-2. Go to vercel.com → New Project → import the repo → Deploy. Zero config.
+**From the dashboard:** push this folder to a GitHub repo, then vercel.com to
+New Project to import to Deploy. Zero config.
 
-**Option B — from the terminal:**
+**From the terminal:**
 ```bash
 npm i -g vercel
-vercel            # first run links/creates the project
-vercel --prod     # deploys to production
+vercel                 # first run links / creates the project
+vercel --prod          # ships to production
 ```
 
 ## How the WhatsApp order works

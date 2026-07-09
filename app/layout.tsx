@@ -17,10 +17,10 @@ const sans = Inter({
 });
 
 export const metadata: Metadata = {
-  title: `${shop.name} — ${shop.tagline}`,
+  title: `${shop.name} · ${shop.tagline}`,
   description: shop.subtagline,
   openGraph: {
-    title: `${shop.name} — ${shop.tagline}`,
+    title: `${shop.name} · ${shop.tagline}`,
     description: shop.subtagline,
     type: "website",
   },

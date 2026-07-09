@@ -12,7 +12,7 @@ const config: Config = {
         xs: "400px",
       },
       colors: {
-        // Warm & earthy palette — homemade / organic
+        // Warm & earthy palette for homemade / organic
         forest: {
           DEFAULT: "#2f5741",
           dark: "#22412f",
@@ -23,6 +23,10 @@ const config: Config = {
         turmeric: "#e0a53f",
         jaggery: "#8a5a2b",
         clay: "#b5451f",
+        maroon: {
+          DEFAULT: "#8a2b2b",
+          dark: "#6f2020",
+        },
         ink: "#2a241d",
       },
       fontFamily: {

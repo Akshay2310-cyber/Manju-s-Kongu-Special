@@ -1,16 +1,31 @@
 "use client";
 
+import { useState } from "react";
+import Image from "next/image";
 import { shop } from "@/lib/config";
 import { useCart } from "@/lib/cart";
 
 export default function Header() {
   const { count, setOpen } = useCart();
+  const [logoOk, setLogoOk] = useState(true);
   return (
     <header className="sticky top-0 z-40 border-b border-sand/70 bg-cream/85 backdrop-blur-md">
-      <div className="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
-        <a href="#top" className="flex items-center gap-2">
-          <span className="grid h-9 w-9 place-items-center rounded-full bg-forest text-lg">🌿</span>
-          <span className="font-display text-lg font-semibold leading-none text-forest">
+      <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2.5">
+        <a href="#top" className="flex items-center gap-2.5">
+          {logoOk ? (
+            <Image
+              src={shop.logo}
+              alt={shop.name}
+              width={40}
+              height={40}
+              className="h-10 w-10 rounded-full object-contain"
+              onError={() => setLogoOk(false)}
+              priority
+            />
+          ) : (
+            <span className="grid h-10 w-10 place-items-center rounded-full bg-maroon text-lg">🌿</span>
+          )}
+          <span className="font-display text-base font-semibold leading-tight text-maroon sm:text-lg">
             {shop.name}
           </span>
         </a>

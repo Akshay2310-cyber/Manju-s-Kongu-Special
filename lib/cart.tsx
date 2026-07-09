@@ -103,7 +103,7 @@ export function buildWhatsAppOrder(
   customer: { name: string; phone: string; address: string; notes: string }
 ): string {
   const lines: string[] = [];
-  lines.push(`*New order — ${shop.name}*`);
+  lines.push(`*New order · ${shop.name}*`);
   lines.push("");
   items.forEach(({ product, qty }, i) => {
     lines.push(

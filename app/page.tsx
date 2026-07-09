@@ -1,6 +1,6 @@
 import { CartProvider } from "@/lib/cart";
 import Header from "@/components/Header";
-import Hero from "@/components/Hero";
+import BentoHero from "@/components/BentoHero";
 import Catalog from "@/components/Catalog";
 import CartSheet from "@/components/CartSheet";
 import FloatingCartBar from "@/components/FloatingCartBar";
@@ -11,7 +11,7 @@ export default function Home() {
     <CartProvider>
       <Header />
       <main>
-        <Hero />
+        <BentoHero />
         <Catalog />
       </main>
       <Footer />
