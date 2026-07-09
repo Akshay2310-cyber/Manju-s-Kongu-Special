@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { shop, assets, categories } from "@/lib/config";
+import { shop, assets, categories, assetImage } from "@/lib/config";
 
 export default function BentoHero() {
   return (
@@ -32,7 +32,7 @@ export default function BentoHero() {
 
           <div className="relative flex h-full flex-col justify-between p-6 sm:p-8">
             <div className="flex flex-col gap-2">
-              <span className="font-display text-sm font-semibold tracking-wide text-turmeric">
+              <span className="font-brand text-lg font-semibold tracking-wide text-turmeric sm:text-xl">
                 {shop.name}
               </span>
               <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-cream/15 px-3 py-1 text-xs font-medium backdrop-blur-sm">
@@ -99,11 +99,21 @@ export default function BentoHero() {
         ))}
 
         {/* ---- USP tile ---- */}
-        <div className="col-span-1 flex flex-col justify-between rounded-3xl bg-turmeric p-4 text-ink shadow-card">
-          <span className="text-2xl">🌾</span>
-          <div>
+        <div className="group relative col-span-1 flex flex-col justify-between overflow-hidden rounded-3xl bg-turmeric p-4 text-cream shadow-card">
+          {assetImage("usp-natural") ? (
+            <Image
+              src={assetImage("usp-natural")!}
+              alt="Pure, natural ingredients"
+              fill
+              sizes="(max-width:768px) 50vw, 260px"
+              className="object-cover transition duration-700 group-hover:scale-110"
+            />
+          ) : null}
+          <div className="absolute inset-0 bg-gradient-to-t from-jaggery/90 via-jaggery/40 to-jaggery/10" />
+          <span className="relative text-2xl">🌾</span>
+          <div className="relative">
             <div className="font-display text-xl font-semibold leading-tight">No preservatives</div>
-            <div className="mt-0.5 text-xs text-ink/70">Ever. Just real ingredients.</div>
+            <div className="mt-0.5 text-xs text-cream/80">Ever. Just real ingredients.</div>
           </div>
         </div>
       </div>

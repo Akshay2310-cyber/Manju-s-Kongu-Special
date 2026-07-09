@@ -17,9 +17,11 @@ export const generatedImages: Record<string, string> = {
   "curry-masala": "/generated/curry-masala.png",
   "idli-podi": "/generated/idli-podi.png",
   "nattu-vellam": "/generated/nattu-vellam.png",
-  "nattu-sakkarai": "/generated/nattu-sakkarai.png"
+  "nattu-sakkarai": "/generated/nattu-sakkarai.png",
+  "usp-natural": "/generated/usp-natural.png",
+  "footer": "/generated/footer.png"
 };
 export const generatedHero: { image: string; video: string } = {
   "image": "/generated/hero.png",
-  "video": ""
+  "video": "/generated/hero.mp4"
 };

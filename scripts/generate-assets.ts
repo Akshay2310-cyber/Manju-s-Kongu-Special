@@ -35,7 +35,7 @@ const FORCE = process.argv.includes("--force");
 const WITH_VIDEO = process.argv.includes("--video");
 
 const IMAGE_MODEL = process.env.GEMINI_IMAGE_MODEL || "gemini-2.5-flash-image";
-const VIDEO_MODEL = process.env.GEMINI_VIDEO_MODEL || "veo-3.0-generate-001";
+const VIDEO_MODEL = process.env.GEMINI_VIDEO_MODEL || "veo-3.1-fast-generate-preview";
 
 const OUT_DIR = resolve(process.cwd(), "public", "generated");
 mkdirSync(OUT_DIR, { recursive: true });
@@ -89,32 +89,50 @@ async function genImage(id: string, prompt: string, aspect: string) {
   }
 }
 
+// retry a network call a few times on transient errors (e.g. "fetch failed")
+async function withRetry<T>(label: string, fn: () => Promise<T>, tries = 4): Promise<T> {
+  let lastErr: any;
+  for (let i = 1; i <= tries; i++) {
+    try {
+      return await fn();
+    } catch (e: any) {
+      lastErr = e;
+      console.warn(`    (${label} attempt ${i}/${tries} failed: ${e?.message || e})`);
+      await new Promise((r) => setTimeout(r, 5000 * i));
+    }
+  }
+  throw lastErr;
+}
+
 async function genHeroVideo() {
   console.log("\nRendering hero video with Veo (this can take a few minutes)...");
   try {
-    let op = await ai.models.generateVideos({
-      model: VIDEO_MODEL,
-      prompt:
-        "Slow cinematic close-up pan across an Indian home kitchen counter: glass bottles of golden wood-pressed oils, wooden bowls of colourful spice powders, and blocks of jaggery with fresh sugarcane. Warm morning light, steam, shallow depth of field, cozy artisanal mood. No text.",
-      config: { numberOfVideos: 1 },
-    });
+    const prompt =
+      "Slow cinematic close-up pan across an Indian home kitchen counter: glass bottles of golden wood-pressed oils, wooden bowls of colourful spice powders, and blocks of jaggery with fresh sugarcane. Warm morning light, gentle steam, shallow depth of field, cozy artisanal mood. No text.";
+    let op = await withRetry("start", () =>
+      ai.models.generateVideos({
+        model: VIDEO_MODEL,
+        prompt,
+        config: { numberOfVideos: 1, aspectRatio: "16:9" },
+      })
+    );
     while (!op.done) {
-      await new Promise((r) => setTimeout(r, 10000));
-      op = await ai.operations.getVideosOperation({ operation: op });
+      await new Promise((r) => setTimeout(r, 12000));
+      op = await withRetry("poll", () => ai.operations.getVideosOperation({ operation: op }));
       console.log("  ... still rendering");
     }
     const video = op.response?.generatedVideos?.[0]?.video;
     if (!video) {
-      console.warn("  ! Veo returned no video (your key may lack Veo access). Skipped.");
+      console.warn("  ! Veo returned no video. Skipped.");
       return;
     }
     const file = join(OUT_DIR, "hero.mp4");
-    await ai.files.download({ file: video, downloadPath: file });
+    await withRetry("download", () => ai.files.download({ file: video, downloadPath: file }));
     heroVideoPath = "/generated/hero.mp4";
     console.log("  ✓ hero.mp4");
   } catch (e: any) {
-    console.warn(`  ! hero video failed: ${e?.message || e}`);
-    console.warn("    (Veo needs a paid tier. Images still work fine without it.)");
+    console.warn(`  ! hero video failed after retries: ${e?.message || e}`);
+    console.warn("    (Images still work fine without it.)");
   }
 }
 
@@ -150,6 +168,23 @@ async function main() {
   for (const p of products) {
     if (p.imgPrompt) await genImage(p.id, p.imgPrompt, "Square composition, centered");
   }
+
+  console.log("\nFeatures:");
+  const FEATURES: { id: string; prompt: string; aspect: string }[] = [
+    {
+      id: "usp-natural",
+      prompt:
+        "Fresh whole natural ingredients arranged beautifully: green curry leaves, turmeric roots, dried red chillies, sesame seeds and a coconut, on a rustic surface, symbolising 100% pure and natural with no preservatives or chemicals",
+      aspect: "Square composition",
+    },
+    {
+      id: "footer",
+      prompt:
+        "A warm, moody wide banner of an Indian home kitchen shelf with glass bottles of wood-pressed oils, jars of spice powders and jaggery, soft golden light, dark rustic tones, atmospheric",
+      aspect: "Wide 16:9 composition",
+    },
+  ];
+  for (const f of FEATURES) await genImage(f.id, f.prompt, f.aspect);
 
   if (WITH_VIDEO) await genHeroVideo();
 

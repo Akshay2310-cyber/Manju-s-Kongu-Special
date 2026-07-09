@@ -25,7 +25,7 @@ export default function Header() {
           ) : (
             <span className="grid h-10 w-10 place-items-center rounded-full bg-maroon text-lg">🌿</span>
           )}
-          <span className="font-display text-base font-semibold leading-tight text-maroon sm:text-lg">
+          <span className="font-brand text-lg font-semibold leading-tight tracking-tight text-maroon sm:text-xl">
             {shop.name}
           </span>
         </a>

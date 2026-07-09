@@ -24,7 +24,7 @@ export const shop = {
   whatsappNumber: "916364858213",
 
   deliveryNote:
-    "Orders are confirmed on WhatsApp. We reply with payment (UPI) & doorstep delivery details. Serving all over India.",
+    "Orders are confirmed on WhatsApp. We reply with payment (UPI) & doorstep delivery details.",
 
   badges: [
     "100% Natural & Pure",
@@ -38,7 +38,12 @@ export const shop = {
   freeDeliveryAbove: 999,
 
   instagram: "",
-  location: "Kongu region, Tamil Nadu · Serving all over India",
+  // Where you deliver
+  targetAreas: ["Gobichettipalayam", "Bengaluru"],
+  location: "Gobichettipalayam & Bengaluru",
+
+  // Your live site URL (used for social share previews). Update after deploy.
+  siteUrl: "https://manju-s-kongu-special.vercel.app",
 };
 
 export const assets = {
@@ -143,3 +148,8 @@ export const products: Product[] = rawProducts.map((p) => ({
   ...p,
   image: p.image || generatedImages[p.id] || undefined,
 }));
+
+// Look up any generated image by id (hero, cat-*, product ids, feature ids like "usp-natural").
+export function assetImage(id: string): string | undefined {
+  return generatedImages[id] || undefined;
+}

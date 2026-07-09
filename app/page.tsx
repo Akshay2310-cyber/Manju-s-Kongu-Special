@@ -4,6 +4,7 @@ import BentoHero from "@/components/BentoHero";
 import Catalog from "@/components/Catalog";
 import CartSheet from "@/components/CartSheet";
 import FloatingCartBar from "@/components/FloatingCartBar";
+import ChatWidget from "@/components/ChatWidget";
 import Footer from "@/components/Footer";
 
 export default function Home() {
@@ -16,6 +17,7 @@ export default function Home() {
       </main>
       <Footer />
       <FloatingCartBar />
+      <ChatWidget />
       <CartSheet />
     </CartProvider>
   );
