@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-cream text-ink antialiased;
+  /* subtle paper texture via layered gradients */
+  background-image:
+    radial-gradient(circle at 15% 12%, rgba(224, 165, 63, 0.10), transparent 40%),
+    radial-gradient(circle at 85% 0%, rgba(47, 87, 65, 0.08), transparent 35%);
+  background-attachment: fixed;
+}
+
+/* prevent horizontal scroll on mobile */
+html, body {
+  overflow-x: hidden;
+}
+
+/* nicer tap targets on mobile */
+button {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* hide scrollbar for category chips row */
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
