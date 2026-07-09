@@ -1,11 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { products, shop, type Product } from "./config";
+import { products as seedProducts, shop, type Product } from "./config";
 
 type CartState = Record<string, number>; // productId -> qty
 
 type CartContextType = {
+  products: Product[];
   cart: CartState;
   count: number;
   subtotal: number;
@@ -16,17 +17,31 @@ type CartContextType = {
   clear: () => void;
   open: boolean;
   setOpen: (v: boolean) => void;
+  // coupon
+  couponCode: string | null;
+  discount: number;
+  total: number;
+  applyCoupon: (code: string) => Promise<{ ok: boolean; message: string }>;
+  removeCoupon: () => void;
 };
 
 const CartContext = createContext<CartContextType | null>(null);
-const STORAGE_KEY = "ammakitchen.cart.v1";
+const STORAGE_KEY = "mks.cart.v1";
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
+export function CartProvider({
+  products,
+  children,
+}: {
+  products?: Product[];
+  children: React.ReactNode;
+}) {
+  const list = products && products.length ? products : seedProducts;
   const [cart, setCart] = useState<CartState>({});
   const [open, setOpen] = useState(false);
   const [hydrated, setHydrated] = useState(false);
+  const [couponCode, setCouponCode] = useState<string | null>(null);
+  const [discount, setDiscount] = useState(0);
 
-  // load from localStorage once
   useEffect(() => {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -35,7 +50,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setHydrated(true);
   }, []);
 
-  // persist
   useEffect(() => {
     if (!hydrated) return;
     try {
@@ -58,14 +72,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       delete copy[id];
       return copy;
     });
-  const clear = () => setCart({});
+  const clear = () => {
+    setCart({});
+    setCouponCode(null);
+    setDiscount(0);
+  };
 
   const items = useMemo(
     () =>
       Object.entries(cart)
-        .map(([id, qty]) => ({ product: products.find((p) => p.id === id)!, qty }))
+        .map(([id, qty]) => ({ product: list.find((p) => p.id === id)!, qty }))
         .filter((x) => x.product),
-    [cart]
+    [cart, list]
   );
 
   const count = useMemo(() => Object.values(cart).reduce((a, b) => a + b, 0), [cart]);
@@ -74,7 +92,58 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [items]
   );
 
+  const applyCoupon = async (code: string) => {
+    const res = await fetch("/api/coupons/validate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code, subtotal }),
+    })
+      .then((r) => r.json())
+      .catch(() => ({ ok: false, discount: 0, message: "Could not check code" }));
+    if (res.ok) {
+      setCouponCode(res.code || code.toUpperCase());
+      setDiscount(res.discount);
+    } else {
+      setCouponCode(null);
+      setDiscount(0);
+    }
+    return { ok: !!res.ok, message: res.message || "" };
+  };
+
+  const removeCoupon = () => {
+    setCouponCode(null);
+    setDiscount(0);
+  };
+
+  // re-validate coupon whenever the cart total changes
+  useEffect(() => {
+    if (!couponCode) return;
+    let cancelled = false;
+    fetch("/api/coupons/validate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ code: couponCode, subtotal }),
+    })
+      .then((r) => r.json())
+      .then((res) => {
+        if (cancelled) return;
+        if (res.ok) setDiscount(res.discount);
+        else {
+          setCouponCode(null);
+          setDiscount(0);
+        }
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subtotal]);
+
+  const total = Math.max(0, subtotal - discount);
+
   const value: CartContextType = {
+    products: list,
     cart,
     count,
     subtotal,
@@ -85,6 +154,11 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     clear,
     open,
     setOpen,
+    couponCode,
+    discount,
+    total,
+    applyCoupon,
+    removeCoupon,
   };
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
@@ -100,7 +174,8 @@ export function useCart() {
 export function buildWhatsAppOrder(
   items: { product: Product; qty: number }[],
   subtotal: number,
-  customer: { name: string; phone: string; address: string; notes: string }
+  customer: { name: string; phone: string; address: string; notes: string },
+  coupon?: { code: string | null; discount: number; total: number }
 ): string {
   const lines: string[] = [];
   lines.push(`*New order · ${shop.name}*`);
@@ -111,7 +186,13 @@ export function buildWhatsAppOrder(
     );
   });
   lines.push("");
-  lines.push(`*Subtotal: ${shop.currency}${subtotal}*`);
+  lines.push(`Subtotal: ${shop.currency}${subtotal}`);
+  if (coupon && coupon.discount > 0) {
+    lines.push(`Coupon ${coupon.code}: -${shop.currency}${coupon.discount}`);
+    lines.push(`*Total: ${shop.currency}${coupon.total}*`);
+  } else {
+    lines.push(`*Total: ${shop.currency}${subtotal}*`);
+  }
   lines.push("");
   lines.push(`👤 Name: ${customer.name || "-"}`);
   lines.push(`📞 Phone: ${customer.phone || "-"}`);

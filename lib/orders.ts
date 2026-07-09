@@ -19,9 +19,40 @@ export type Order = {
   notes: string;
   items: OrderItem[];
   subtotal: number;
+  discount: number;
+  total: number;
+  coupon_code: string | null;
   count: number;
   status: OrderStatus;
 };
+
+export type Coupon = {
+  code: string;
+  type: "percent" | "flat";
+  value: number;
+  min_subtotal: number;
+  active: boolean;
+};
+
+// Admin view of a product (adds active/sort to the storefront Product)
+export type AdminProduct = {
+  id: string;
+  name: string;
+  desc: string;
+  price: number;
+  unit: string;
+  category: string;
+  emoji: string;
+  image?: string;
+  tag?: string;
+  active: boolean;
+  sort: number;
+};
+
+export function computeDiscount(c: Pick<Coupon, "type" | "value">, subtotal: number): number {
+  if (c.type === "percent") return Math.round((subtotal * c.value) / 100);
+  return Math.min(c.value, subtotal);
+}
 
 export const STATUS_META: Record<OrderStatus, { label: string; className: string }> = {
   new: { label: "New", className: "bg-turmeric/20 text-jaggery border-turmeric/40" },

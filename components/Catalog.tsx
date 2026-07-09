@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { categories, products, type CategoryId } from "@/lib/config";
+import { categories, type CategoryId } from "@/lib/config";
+import { useCart } from "@/lib/cart";
 import ProductCard from "./ProductCard";
 import Reveal from "./Reveal";
 
@@ -9,6 +10,7 @@ type Filter = "all" | CategoryId;
 
 export default function Catalog() {
   const [filter, setFilter] = useState<Filter>("all");
+  const { products } = useCart();
   const visible = filter === "all" ? products : products.filter((p) => p.category === filter);
 
   return (

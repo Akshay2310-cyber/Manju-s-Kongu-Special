@@ -40,3 +40,6 @@ _incoming/
 /data
 *.db
 *.db-journal
+
+.vercel
+.env*

@@ -1,31 +1,39 @@
 import { NextResponse } from "next/server";
-import { deleteOrder, updateOrderStatus } from "@/lib/db";
+import { deleteProduct, saveProduct } from "@/lib/db";
 import { isAuthed } from "@/lib/admin-auth";
-import { STATUS_ORDER, type OrderStatus } from "@/lib/orders";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-// Protected: update an order's status
+// Update a product (admin)
 export async function PATCH(req: Request, { params }: { params: { id: string } }) {
   if (!isAuthed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
     const b = await req.json();
-    if (!STATUS_ORDER.includes(b?.status)) {
-      return NextResponse.json({ error: "Bad status" }, { status: 400 });
-    }
-    await updateOrderStatus(params.id, b.status as OrderStatus);
+    await saveProduct({
+      id: params.id,
+      name: String(b.name),
+      desc: String(b.desc || ""),
+      price: Number(b.price) || 0,
+      unit: String(b.unit || ""),
+      category: String(b.category),
+      emoji: b.emoji ? String(b.emoji) : "📦",
+      image: b.image ? String(b.image) : null,
+      tag: b.tag ? String(b.tag) : null,
+      active: b.active ?? true,
+      sort: Number(b.sort) || 0,
+    });
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     return NextResponse.json({ error: e?.message || "Server error" }, { status: 500 });
   }
 }
 
-// Delete an order (admin), e.g. test or spam orders
+// Delete a product (admin)
 export async function DELETE(req: Request, { params }: { params: { id: string } }) {
   if (!isAuthed(req)) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   try {
-    await deleteOrder(params.id);
+    await deleteProduct(params.id);
     return NextResponse.json({ ok: true });
   } catch (e: any) {
     return NextResponse.json({ error: e?.message || "Server error" }, { status: 500 });

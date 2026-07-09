@@ -5,9 +5,35 @@ import { shop } from "@/lib/config";
 import { useCart, buildWhatsAppOrder, waLink } from "@/lib/cart";
 
 export default function CartSheet() {
-  const { open, setOpen, items, subtotal, count, add, decrement, remove, clear } = useCart();
+  const {
+    open,
+    setOpen,
+    items,
+    subtotal,
+    count,
+    add,
+    decrement,
+    remove,
+    clear,
+    couponCode,
+    discount,
+    total,
+    applyCoupon,
+    removeCoupon,
+  } = useCart();
   const [customer, setCustomer] = useState({ name: "", phone: "", address: "", notes: "" });
   const [touched, setTouched] = useState(false);
+  const [couponInput, setCouponInput] = useState("");
+  const [couponMsg, setCouponMsg] = useState("");
+  const [applying, setApplying] = useState(false);
+
+  const onApplyCoupon = async () => {
+    if (!couponInput.trim()) return;
+    setApplying(true);
+    const res = await applyCoupon(couponInput.trim());
+    setCouponMsg(res.message);
+    setApplying(false);
+  };
 
   const canOrder = count > 0 && customer.name.trim() && customer.phone.trim() && customer.address.trim();
   const remaining = shop.freeDeliveryAbove > 0 ? shop.freeDeliveryAbove - subtotal : 0;
@@ -16,7 +42,7 @@ export default function CartSheet() {
     setTouched(true);
     if (!canOrder) return;
     // open WhatsApp synchronously (keeps the user gesture, avoids popup block)
-    const msg = buildWhatsAppOrder(items, subtotal, customer);
+    const msg = buildWhatsAppOrder(items, subtotal, customer, { code: couponCode, discount, total });
     window.open(waLink(msg), "_blank");
     // record the order in the backend (best-effort, non-blocking)
     const orderItems = items.map(({ product, qty }) => ({
@@ -29,7 +55,7 @@ export default function CartSheet() {
     fetch("/api/orders", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...customer, items: orderItems, subtotal, count }),
+      body: JSON.stringify({ ...customer, items: orderItems, subtotal, count, coupon_code: couponCode }),
     }).catch(() => {});
     clear();
     setOpen(false);
@@ -163,12 +189,67 @@ export default function CartSheet() {
         {/* footer / checkout */}
         {count > 0 && (
           <div className="border-t border-sand bg-cream px-5 pb-[max(1rem,env(safe-area-inset-bottom))] pt-3">
-            <div className="mb-2 flex items-center justify-between">
-              <span className="text-ink/60">Subtotal</span>
-              <span className="font-display text-xl font-semibold text-ink">
-                {shop.currency}
-                {subtotal}
-              </span>
+            {/* coupon */}
+            {couponCode ? (
+              <div className="mb-2 flex items-center justify-between rounded-xl bg-forest/10 px-3 py-2 text-sm">
+                <span className="font-medium text-forest">🎉 {couponCode} applied</span>
+                <button
+                  onClick={() => {
+                    removeCoupon();
+                    setCouponInput("");
+                    setCouponMsg("");
+                  }}
+                  className="text-xs font-medium text-clay"
+                >
+                  Remove
+                </button>
+              </div>
+            ) : (
+              <div className="mb-2">
+                <div className="flex gap-2">
+                  <input
+                    value={couponInput}
+                    onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                    placeholder="Coupon code"
+                    className="flex-1 rounded-xl border border-sand bg-white/80 px-3 py-2 text-sm uppercase outline-none placeholder:normal-case focus:border-forest"
+                  />
+                  <button
+                    onClick={onApplyCoupon}
+                    disabled={applying}
+                    className="rounded-xl bg-forest px-4 py-2 text-sm font-medium text-cream transition active:scale-95 disabled:opacity-60"
+                  >
+                    {applying ? "..." : "Apply"}
+                  </button>
+                </div>
+                {couponMsg && <p className="mt-1 text-xs text-clay">{couponMsg}</p>}
+              </div>
+            )}
+
+            {/* totals */}
+            <div className="mb-2 space-y-1">
+              <div className="flex items-center justify-between text-sm text-ink/60">
+                <span>Subtotal</span>
+                <span>
+                  {shop.currency}
+                  {subtotal}
+                </span>
+              </div>
+              {discount > 0 && (
+                <div className="flex items-center justify-between text-sm font-medium text-forest">
+                  <span>Discount ({couponCode})</span>
+                  <span>
+                    -{shop.currency}
+                    {discount}
+                  </span>
+                </div>
+              )}
+              <div className="flex items-center justify-between">
+                <span className="font-medium text-ink">Total</span>
+                <span className="font-display text-xl font-semibold text-ink">
+                  {shop.currency}
+                  {total}
+                </span>
+              </div>
             </div>
             <button
               onClick={handleOrder}

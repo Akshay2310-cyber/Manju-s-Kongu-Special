@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createOrder, listOrders } from "@/lib/db";
+import { createOrder, listOrders, validateCoupon } from "@/lib/db";
 import { isAuthed } from "@/lib/admin-auth";
 import type { OrderItem } from "@/lib/orders";
 
@@ -22,6 +22,16 @@ export async function POST(req: Request) {
     }));
     const subtotal = Number(b.subtotal) || items.reduce((s, i) => s + i.price * i.qty, 0);
     const count = Number(b.count) || items.reduce((s, i) => s + i.qty, 0);
+    // re-validate coupon server-side (never trust client discount)
+    let discount = 0;
+    let coupon_code: string | null = null;
+    if (b.coupon_code) {
+      const v = await validateCoupon(String(b.coupon_code), subtotal);
+      if (v.ok) {
+        discount = v.discount;
+        coupon_code = v.code || null;
+      }
+    }
     const order = await createOrder({
       name: String(b.name).slice(0, 120),
       phone: String(b.phone).slice(0, 30),
@@ -29,6 +39,8 @@ export async function POST(req: Request) {
       notes: String(b.notes || "").slice(0, 500),
       items,
       subtotal,
+      discount,
+      coupon_code,
       count,
     });
     return NextResponse.json({ ok: true, id: order.id });
