@@ -10,18 +10,20 @@ import { generatedImages, generatedHero } from "./assets.generated";
 
 export const shop = {
   // Brand (from your logo / menu)
-  name: "Manju's Kongu Special",
-  tagline: "Farm-fresh masalas & hand-pressed oils",
+  name: "ARAM",
+  tagline: "Homemade masalas, wood-pressed oils & jaggery",
   subtagline:
-    "From our home to yours. Pure, authentic and healthy, crafted with care the traditional Kongu way.",
+    "From our home to yours. Pure, authentic and healthy, crafted with care the traditional way.",
 
-  // Logo file. Drop your logo image in /public and set the name here.
+  // Logo files. Full lockup for large/social; wordmark for the header; square
+  // mark (the peacock glyph) for small circular avatars.
   logo: "/logo.png",
+  logoWordmark: "/logo-wordmark.png",
+  logoMark: "/mark.png",
 
   // WhatsApp number that receives EVERY order (country code, no + or spaces).
-  // You asked for 63648 58213 -> 916364858213.
-  // (Your poster shows 8296996751 / 7349128364. Change here if you prefer those.)
-  whatsappNumber: "916364858213",
+  // 8618951044 -> 918618951044.
+  whatsappNumber: "918618951044",
 
   deliveryNote:
     "Orders are confirmed on WhatsApp. We reply with payment (UPI) & doorstep delivery details.",
@@ -43,7 +45,7 @@ export const shop = {
   location: "Gobichettipalayam & Bengaluru",
 
   // Your live site URL (used for social share previews). Update after deploy.
-  siteUrl: "https://manju-s-kongu-special.vercel.app",
+  siteUrl: "https://aramfoods.co",
 };
 
 export const assets = {

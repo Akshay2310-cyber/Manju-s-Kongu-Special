@@ -23,7 +23,7 @@ export default function Footer() {
         <div className="flex flex-col gap-6 border-b border-cream/10 pb-8 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <span className="grid h-12 w-12 place-items-center overflow-hidden rounded-full bg-cream">
-              <Image src={shop.logo} alt={shop.name} width={48} height={48} className="h-12 w-12 object-contain" />
+              <Image src={shop.logoMark} alt={shop.name} width={48} height={48} className="h-12 w-12 rounded-full object-contain" />
             </span>
             <div>
               <div className="font-brand text-xl font-semibold leading-tight text-cream">{shop.name}</div>
@@ -98,7 +98,7 @@ export default function Footer() {
 
         {/* bottom */}
         <div className="flex flex-col items-center justify-between gap-2 border-t border-cream/10 pt-6 text-xs text-cream/50 sm:flex-row">
-          <span>© {shop.name}. Made the traditional Kongu way.</span>
+          <span>© {shop.name} Foods. Homemade · Pure · Wholesome.</span>
           <span>Serving {shop.targetAreas.join(" & ")}</span>
         </div>
       </div>

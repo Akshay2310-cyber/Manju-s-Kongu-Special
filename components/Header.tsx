@@ -11,23 +11,22 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-sand/70 bg-cream/85 backdrop-blur-md">
       <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-2.5">
-        <a href="#top" className="flex items-center gap-2.5">
+        <a href="#top" className="flex items-center">
           {logoOk ? (
             <Image
-              src={shop.logo}
+              src={shop.logoWordmark}
               alt={shop.name}
-              width={40}
-              height={40}
-              className="h-10 w-10 rounded-full object-contain"
+              width={716}
+              height={343}
+              className="h-11 w-auto object-contain sm:h-12"
               onError={() => setLogoOk(false)}
               priority
             />
           ) : (
-            <span className="grid h-10 w-10 place-items-center rounded-full bg-maroon text-lg">🌿</span>
+            <span className="font-brand text-xl font-semibold leading-tight tracking-tight text-maroon">
+              {shop.name}
+            </span>
           )}
-          <span className="font-brand text-lg font-semibold leading-tight tracking-tight text-maroon sm:text-xl">
-            {shop.name}
-          </span>
         </a>
         <button
           onClick={() => setOpen(true)}

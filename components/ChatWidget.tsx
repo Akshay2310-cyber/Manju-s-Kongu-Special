@@ -30,7 +30,7 @@ export default function ChatWidget() {
         <div className="w-[min(20rem,calc(100vw-2rem))] animate-slide-up overflow-hidden rounded-3xl bg-cream shadow-soft">
           <div className="flex items-center gap-3 bg-forest px-4 py-3 text-cream">
             <span className="grid h-10 w-10 place-items-center overflow-hidden rounded-full bg-cream">
-              <Image src={shop.logo} alt={shop.name} width={40} height={40} className="h-10 w-10 object-contain" />
+              <Image src={shop.logoMark} alt={shop.name} width={40} height={40} className="h-10 w-10 rounded-full object-contain" />
             </span>
             <div className="min-w-0 flex-1">
               <div className="truncate font-brand text-base font-semibold leading-tight">{shop.name}</div>

@@ -43,3 +43,4 @@ _incoming/
 
 .vercel
 .env*
+.prodserver.log

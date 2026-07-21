@@ -1,4 +1,4 @@
-# Manju's Kongu Special · WhatsApp storefront
+# ARAM Foods · WhatsApp storefront
 
 A modern, mobile-first, Apple-style bento storefront for farm-fresh masalas,
 wood-pressed oils and healthy sweeteners. Customers browse, add to cart, fill
@@ -11,7 +11,7 @@ cost, no Meta approval.
 [`lib/config.ts`](lib/config.ts):
 
 - `shop.name`, `shop.tagline`, `shop.logo`
-- `shop.whatsappNumber`: the number that receives orders (currently `916364858213`)
+- `shop.whatsappNumber`: the number that receives orders (currently `918618951044`)
 - `products`: names, **prices** (currently placeholders, update them), units, categories
 - `categories`: the three sections (oils / masalas / sweeteners)
 
